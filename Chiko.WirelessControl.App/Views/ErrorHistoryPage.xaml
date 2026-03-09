@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Chiko.WirelessControl.App.Views.ErrorHistoryPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="エラー発生履歴"
+    BackgroundColor="{StaticResource AppBg}">
+
+    <Grid Padding="20">
+        <VerticalStackLayout Spacing="16">
+            <Label Text="エラー発生履歴"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource White}" />
+            <Label Text="エラー発生履歴一覧画面（プレースホルダ）"
+                   TextColor="{StaticResource TextPrimary}" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

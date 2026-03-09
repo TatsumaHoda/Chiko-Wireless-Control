@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- ===== CHIKO EtherControl 参考のダーク系パレット ===== -->
+    <Color x:Key="AppBg">#071926</Color>
+    <!-- 画面全体 -->
+    <Color x:Key="Surface">#0B2536</Color>
+    <!-- パネル/カード -->
+    <Color x:Key="Surface2">#0E2C3E</Color>
+    <!-- 内側コンテナ -->
+    <Color x:Key="Border">#1C3E55</Color>
+    <!-- 枠線 -->
+    <Color x:Key="TextPrimary">#EAF2F8</Color>
+    <!-- 主要文字 -->
+    <Color x:Key="TextSecondary">#A8BBC9</Color>
+    <!-- 補助文字 -->
+    <Color x:Key="ChikoBlue">#2E91C9</Color>
+    <!-- CHIKOアクセント（必要なら調整） -->
+
+    <!-- Action colors -->
+    <Color x:Key="RunGreen">#4CD000</Color>
+    <Color x:Key="StopRed">#FF4A4A</Color>
+    <Color x:Key="ActionBlue">#3B66FF</Color>
+    <Color x:Key="ActionOrange">#FFA51F</Color>
+
+    <!-- ===== MAUIテンプレ互換キー（Styles.xaml対策） ===== -->
+    <Color x:Key="Primary">#2E91C9</Color>
+    <Color x:Key="Secondary">#A8BBC9</Color>
+    <Color x:Key="Tertiary">#2E91C9</Color>
+
+    <Color x:Key="White">#FFFFFF</Color>
+    <Color x:Key="Black">#000000</Color>
+
+    <Color x:Key="Gray50">#FAFAFA</Color>
+    <Color x:Key="Gray100">#F5F5F5</Color>
+    <Color x:Key="Gray200">#EEEEEE</Color>
+    <Color x:Key="Gray300">#E0E0E0</Color>
+    <Color x:Key="Gray400">#BDBDBD</Color>
+    <Color x:Key="Gray500">#9E9E9E</Color>
+    <Color x:Key="Gray600">#757575</Color>
+    <Color x:Key="Gray700">#616161</Color>
+    <Color x:Key="Gray800">#424242</Color>
+    <Color x:Key="Gray900">#212121</Color>
+
+</ResourceDictionary>

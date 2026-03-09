@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050B18"/>
+      <stop offset="0.55" stop-color="#071B3A"/>
+      <stop offset="1" stop-color="#05233C"/>
+    </linearGradient>
+
+    <radialGradient id="spot" cx="72%" cy="40%" r="70%">
+      <stop offset="0" stop-color="#00D5FF" stop-opacity="0.18"/>
+      <stop offset="0.45" stop-color="#2B6CFF" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#00D5FF" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+
+    <linearGradient id="title" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#EAFBFF"/>
+      <stop offset="0.45" stop-color="#9DEBFF"/>
+      <stop offset="1" stop-color="#00D5FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#spot)"/>
+
+  <g opacity="0.10" stroke="#9DEBFF" stroke-width="1">
+    <path d="M0 180 H1920 M0 360 H1920 M0 540 H1920 M0 720 H1920 M0 900 H1920"/>
+    <path d="M240 0 V1080 M480 0 V1080 M720 0 V1080 M960 0 V1080 M1200 0 V1080 M1440 0 V1080 M1680 0 V1080"/>
+  </g>
+
+  <g transform="translate(380 540)" filter="url(#shadow)">
+    <circle cx="0" cy="0" r="200" fill="none" stroke="#9DEBFF" stroke-opacity="0.55" stroke-width="18"/>
+    <circle cx="0" cy="0" r="172" fill="none" stroke="#00D5FF" stroke-opacity="0.35" stroke-width="8"/>
+
+    <g fill="none" stroke-linecap="round" stroke="#00D5FF">
+      <path d="M-140 -178 C0 -280, 140 -280, 280 -178" stroke-width="14" stroke-opacity="0.45"/>
+      <path d="M-98 -140 C0 -210, 98 -210, 196 -140" stroke-width="12" stroke-opacity="0.55"/>
+      <path d="M-58 -102 C0 -145, 58 -145, 116 -102" stroke-width="10" stroke-opacity="0.75"/>
+      <circle cx="0" cy="-76" r="12" fill="#41FFB3" opacity="0.9"/>
+    </g>
+
+    <circle cx="0" cy="40" r="132" fill="#00D5FF" opacity="0.10"/>
+    <circle cx="0" cy="40" r="120" fill="#2B6CFF" opacity="0.14"/>
+    <circle cx="0" cy="40" r="96" fill="#00D5FF" opacity="0.18"/>
+    <circle cx="0" cy="40" r="28" fill="#EAFBFF" opacity="0.85"/>
+    <circle cx="0" cy="40" r="12" fill="#050B18" opacity="0.55"/>
+
+    <g transform="translate(0 40)">
+      <rect x="-18" y="-150" width="36" height="108" rx="18" fill="#EAFBFF" opacity="0.9" transform="rotate(20)"/>
+      <rect x="-18" y="-150" width="36" height="108" rx="18" fill="#9DEBFF" opacity="0.9" transform="rotate(110)"/>
+      <rect x="-18" y="-150" width="36" height="108" rx="18" fill="#00D5FF" opacity="0.9" transform="rotate(200)"/>
+      <rect x="-18" y="-150" width="36" height="108" rx="18" fill="#41FFB3" opacity="0.9" transform="rotate(290)"/>
+      <circle cx="0" cy="0" r="82" fill="none" stroke="#EAFBFF" stroke-opacity="0.35" stroke-width="10"/>
+    </g>
+  </g>
+
+  <g transform="translate(720 430)" filter="url(#shadow)">
+    <text x="0" y="0"
+          font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+          font-size="96"
+          font-weight="800"
+          fill="url(#title)"
+          letter-spacing="1">
+      CHIKO Wireless Control
+    </text>
+
+    <text x="6" y="70"
+          font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+          font-size="34"
+          font-weight="600"
+          fill="#9DEBFF"
+          opacity="0.92">
+      Bluetooth • BLE • Wi-Fi  /  TP Dust Collector Monitor &amp; Control
+    </text>
+
+    <g transform="translate(6 110)" opacity="0.85">
+      <rect x="0" y="0" width="520" height="6" rx="3" fill="#00D5FF"/>
+      <rect x="540" y="0" width="220" height="6" rx="3" fill="#41FFB3"/>
+    </g>
+  </g>
+
+  <g transform="translate(1640 980)" opacity="0.65">
+    <text x="0" y="0" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+          font-size="26" font-weight="700" fill="#EAFBFF">CHIKO</text>
+    <text x="0" y="28" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif"
+          font-size="18" font-weight="600" fill="#9DEBFF">Industrial Wireless Control</text>
+  </g>
+</svg>

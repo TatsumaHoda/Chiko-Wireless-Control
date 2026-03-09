@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Chiko.WirelessControl.App.Views.GeneralSettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="一般設定"
+    BackgroundColor="{StaticResource AppBg}">
+
+    <Grid Padding="20">
+        <VerticalStackLayout Spacing="16">
+            <Label Text="一般設定"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource White}" />
+            <Label Text="集塵機の設定画面（プレースホルダ）"
+                   TextColor="{StaticResource TextPrimary}" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Shapes -->
+    <RoundRectangle x:Key="RR10" CornerRadius="10" />
+    <RoundRectangle x:Key="RR6" CornerRadius="6" />
+    <RoundRectangle x:Key="RR18" CornerRadius="18" />
+    <RoundRectangle x:Key="RR22" CornerRadius="22" />
+
+    <Style TargetType="ContentPage">
+        <Setter Property="BackgroundColor" Value="{StaticResource AppBg}" />
+    </Style>
+
+    <!-- Panel -->
+    <Style x:Key="PanelBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Surface}" />
+        <Setter Property="Stroke" Value="{StaticResource Border}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape" Value="{StaticResource RR10}" />
+        <Setter Property="Padding" Value="12" />
+    </Style>
+
+    <!-- Inner list container -->
+    <Style x:Key="ListBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Surface2}" />
+        <Setter Property="Stroke" Value="{StaticResource Border}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape" Value="{StaticResource RR6}" />
+        <Setter Property="Padding" Value="8" />
+    </Style>
+
+    <!-- Text -->
+    <Style x:Key="SectionTitleStyle" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+
+    <Style x:Key="ValueBigStyle" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="FontAttributes" Value="Bold" />
+
+        <!-- iOSのDynamic Typeで暴れないように固定（必要ならTrueに戻せます） -->
+        <Setter Property="FontAutoScalingEnabled" Value="False" />
+
+        <!-- Phoneは小さめ、Tablet/Desktopは従来 -->
+        <Setter Property="FontSize">
+            <OnIdiom x:TypeArguments="x:Double">
+                <OnIdiom.Phone>
+                    <OnPlatform x:TypeArguments="x:Double">
+                        <On Platform="iOS" Value="20" />
+                        <On Platform="Android" Value="22" />
+                        <On Platform="WinUI" Value="26" />
+                    </OnPlatform>
+                </OnIdiom.Phone>
+                <OnIdiom.Tablet Value="26" />
+                <OnIdiom.Desktop Value="26" />
+            </OnIdiom>
+        </Setter>
+    </Style>
+
+    <!-- RadioButton (見切れ防止のため少しコンパクトに) -->
+    <Style TargetType="RadioButton">
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <!-- Generic small outline button (SCAN/Connect等) -->
+    <Style x:Key="OutlineSmallButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource Surface2}" />
+        <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />
+        <Setter Property="BorderColor" Value="{StaticResource Border}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="HeightRequest" Value="34" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <!-- Action buttons -->
+    <Style x:Key="ActionButtonBase" TargetType="Button">
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="FontAttributes" Value="Bold" />
+
+        <Setter Property="CornerRadius">
+            <Setter.Value>
+                <OnIdiom x:TypeArguments="x:Int32">
+                    <OnIdiom.Phone>22</OnIdiom.Phone>
+                    <OnIdiom.Tablet>26</OnIdiom.Tablet>
+                    <OnIdiom.Desktop>26</OnIdiom.Desktop>
+                </OnIdiom>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="HeightRequest">
+            <Setter.Value>
+                <OnIdiom x:TypeArguments="x:Double">
+                    <OnIdiom.Phone>48</OnIdiom.Phone>
+                    <OnIdiom.Tablet>56</OnIdiom.Tablet>
+                    <OnIdiom.Desktop>56</OnIdiom.Desktop>
+                </OnIdiom>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="Padding">
+            <Setter.Value>
+                <OnIdiom x:TypeArguments="Thickness">
+                    <OnIdiom.Phone>14,6</OnIdiom.Phone>
+                    <OnIdiom.Tablet>18,8</OnIdiom.Tablet>
+                    <OnIdiom.Desktop>18,8</OnIdiom.Desktop>
+                </OnIdiom>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="FontSize">
+            <Setter.Value>
+                <OnIdiom x:TypeArguments="x:Double">
+                    <OnIdiom.Phone>16</OnIdiom.Phone>
+                    <OnIdiom.Tablet>20</OnIdiom.Tablet>
+                    <OnIdiom.Desktop>20</OnIdiom.Desktop>
+                </OnIdiom>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ScanButtonStyle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource ChikoBlue}" />
+        <Setter Property="TextColor" Value="{StaticResource White}" />
+        <Setter Property="CornerRadius" Value="18" />
+        <Setter Property="HeightRequest" Value="36" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="Padding" Value="18,0" />
+        <Setter Property="MinimumWidthRequest" Value="90" />
+    </Style>
+
+    <Style x:Key="DisconnectButtonStyle" TargetType="Button" BasedOn="{StaticResource ScanButtonStyle}">
+        <Setter Property="BackgroundColor" Value="#B3261E" />
+        <!-- 赤 -->
+        <Setter Property="TextColor" Value="White" />
+    </Style>
+
+    <!-- Segment (Bluetooth / BLE / WiFi) -->
+    <Style x:Key="SegmentButtonBaseStyle" TargetType="Button">
+        <Setter Property="HeightRequest" Value="34" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="BorderColor" Value="{StaticResource Border}" />
+        <Setter Property="BorderWidth" Value="1" />
+    </Style>
+
+    <Style x:Key="SegmentButtonStyle" TargetType="Button" BasedOn="{StaticResource SegmentButtonBaseStyle}">
+        <!-- 非選択時の見た目（Converterで上書きされるなら最低限でOK） -->
+        <Setter Property="BackgroundColor" Value="{StaticResource Surface2}" />
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+
+        <!-- Windowsで文字が見えない問題対策：最低幅を確保 -->
+        <Setter Property="MinimumWidthRequest" Value="84" />
+
+        <!-- 文字が長い端末でも潰れにくくする -->
+        <Setter Property="LineBreakMode" Value="NoWrap" />
+    </Style>
+
+    <Style x:Key="RunButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonBase}">
+        <Setter Property="BackgroundColor" Value="{StaticResource RunGreen}" />
+    </Style>
+
+    <Style x:Key="StopButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonBase}">
+        <Setter Property="BackgroundColor" Value="{StaticResource StopRed}" />
+    </Style>
+
+    <Style x:Key="ErrorClearButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonBase}">
+        <Setter Property="BackgroundColor" Value="{StaticResource ActionBlue}" />
+        <Setter Property="FontSize">
+            <Setter.Value>
+                <OnIdiom x:TypeArguments="x:Double">
+                    <OnIdiom.Phone>14</OnIdiom.Phone>
+                    <OnIdiom.Tablet>16</OnIdiom.Tablet>
+                    <OnIdiom.Desktop>16</OnIdiom.Desktop>
+                </OnIdiom>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="InitialFlowButtonStyle" TargetType="Button" BasedOn="{StaticResource ActionButtonBase}">
+        <Setter Property="BackgroundColor" Value="{StaticResource ActionOrange}" />
+        <Setter Property="FontSize">
+            <Setter.Value>
+                <OnIdiom x:TypeArguments="x:Double">
+                    <OnIdiom.Phone>14</OnIdiom.Phone>
+                    <OnIdiom.Tablet>16</OnIdiom.Tablet>
+                    <OnIdiom.Desktop>16</OnIdiom.Desktop>
+                </OnIdiom>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- ===== Realtime Trend Toggle Styles ===== -->
+    <Style x:Key="TrendCheckBoxStyle" TargetType="CheckBox">
+        <!-- チェック色（既定の白/Primaryに引っ張られないよう固定） -->
+        <Setter Property="Color" Value="{StaticResource ChikoBlue}" />
+        <!-- Windowsで小さく見えるので少しだけ拡大 -->
+        <Setter Property="Scale" Value="0.90" />
+    </Style>
+
+    <Style x:Key="TrendToggleLabelStyle" TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+</ResourceDictionary>

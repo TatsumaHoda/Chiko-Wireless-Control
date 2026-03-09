@@ -1,0 +1,766 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Chiko.WirelessControl.App.MainPage"
+    x:Name="Page"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ctrl="clr-namespace:Chiko.WirelessControl.App.Views.Controls"
+    xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+    xmlns:beh="clr-namespace:Chiko.WirelessControl.App.Behaviors"
+    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+    BackgroundColor="{StaticResource AppBg}"
+    Shell.NavBarIsVisible="False"
+    Padding="{OnPlatform iOS='14,0,14,14', Default='14'}">
+
+    <!-- Root：ヘッダー固定 + 本体スクロール + オーバーレイ（最前面） -->
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="*">
+
+        <!-- ===== Top Bar (固定) ===== -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto,*,Auto"
+              Padding="4,0,4,6">
+
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                <Image Source="chiko_logo.png" HeightRequest="32" Aspect="AspectFit"/>
+                <VerticalStackLayout Spacing="0">
+                    <Label Text="Chiko Wireless Control"
+                           TextColor="{StaticResource White}"
+                           FontSize="16" />
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+
+            <Border Grid.Column="2"
+                    Stroke="{StaticResource White}"
+                    StrokeThickness="1"
+                    StrokeShape="{StaticResource RR22}"
+                    HeightRequest="44"
+                    WidthRequest="44"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center">
+                <ImageButton Source="menu.png"
+                             BackgroundColor="Transparent"
+                             Padding="10"
+                             Command="{Binding OpenMenuCommand}" />
+            </Border>
+        </Grid>
+
+        <!-- ===== Body (画面全体スクロール：必須) ===== -->
+        <ScrollView Grid.Row="1"
+                    Orientation="Vertical"
+                    IsEnabled="{Binding Source={x:Reference Page}, Path=BindingContext.IsUiEnabled}">
+
+            <Grid RowDefinitions="Auto,Auto,Auto"
+                  RowSpacing="14"
+                  ColumnDefinitions="*">
+
+                <!-- ===== 上段：デバイス（左）＋ コントロール（右） ===== -->
+                <Grid Grid.Row="0"
+                      ColumnSpacing="14"
+                      RowSpacing="14">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="320" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- ===== Left: Device Panel ===== -->
+                    <Border Grid.Column="0"
+                            Style="{StaticResource PanelBorderStyle}"
+                            VerticalOptions="Fill"
+                            HorizontalOptions="Fill">
+
+                        <Grid RowDefinitions="Auto,Auto,*,Auto"
+                              RowSpacing="10"
+                              VerticalOptions="Fill"
+                              HorizontalOptions="Fill">
+
+                            <!-- Row 0: Title + Scan -->
+                            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                <Label Grid.Column="0"
+                                       Text="Device List"
+                                       Style="{StaticResource SectionTitleStyle}"
+                                       VerticalOptions="Center"/>
+
+                                <Button Grid.Column="1"
+                                        Text="SCAN"
+                                        Style="{StaticResource ScanButtonStyle}"
+                                        Command="{Binding ScanCommand}">
+                                    <Button.Behaviors>
+                                        <beh:TouchFeedbackBehavior />
+                                    </Button.Behaviors>
+                                </Button>
+                            </Grid>
+
+                            <!-- Row 1: Segmented toggle -->
+                            <Grid Grid.Row="1"
+                                  ColumnDefinitions="*,*,*"
+                                  ColumnSpacing="8">
+
+                                <Button Text="BT"
+                                        Style="{StaticResource SegmentButtonStyle}"
+                                        BackgroundColor="{Binding IsBluetoothSelected, Converter={StaticResource BoolToBgConverter}}"
+                                        TextColor="{Binding IsBluetoothSelected, Converter={StaticResource BoolToTextConverter}}"
+                                        Command="{Binding SelectBluetoothCommand}">
+                                    <Button.Behaviors>
+                                        <beh:TouchFeedbackBehavior />
+                                    </Button.Behaviors>
+                                </Button>
+
+                                <Button Grid.Column="1"
+                                        Text="BLE"
+                                        Style="{StaticResource SegmentButtonStyle}"
+                                        BackgroundColor="{Binding IsBleSelected, Converter={StaticResource BoolToBgConverter}}"
+                                        TextColor="{Binding IsBleSelected, Converter={StaticResource BoolToTextConverter}}"
+                                        Command="{Binding SelectBleCommand}">
+                                    <Button.Behaviors>
+                                        <beh:TouchFeedbackBehavior />
+                                    </Button.Behaviors>
+                                </Button>
+
+                                <Button Grid.Column="2"
+                                        Text="Wi-Fi"
+                                        Style="{StaticResource SegmentButtonStyle}"
+                                        BackgroundColor="{Binding IsWifiSelected, Converter={StaticResource BoolToBgConverter}}"
+                                        TextColor="{Binding IsWifiSelected, Converter={StaticResource BoolToTextConverter}}"
+                                        Command="{Binding SelectWifiCommand}">
+                                    <Button.Behaviors>
+                                        <beh:TouchFeedbackBehavior />
+                                    </Button.Behaviors>
+                                </Button>
+                            </Grid>
+
+                            <!-- Row 2: Device list
+                                 ★ScrollViewで包まない（Windows崩れ要因）
+                                 ★Footerで下ボタンに隠れない余白 -->
+                            <CollectionView Grid.Row="2"
+                                            ItemsSource="{Binding Devices}"
+                                            SelectionMode="Single"
+                                            SelectedItem="{Binding SelectedDevice}"
+                                            VerticalOptions="Fill"
+                                            HorizontalOptions="Fill"
+                                            Margin="0,0,0,10">
+
+                                <CollectionView.EmptyView>
+                                    <Label Text="No devices"
+                                           TextColor="{StaticResource TextSecondary}"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           Margin="0,20,0,0"/>
+                                </CollectionView.EmptyView>
+
+                                <CollectionView.Footer>
+                                    <BoxView HeightRequest="80" Opacity="0"/>
+                                </CollectionView.Footer>
+
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Stroke="{StaticResource White}"
+                                                StrokeThickness="1"
+                                                StrokeShape="{StaticResource RR16}"
+                                                Padding="10"
+                                                Margin="0,0,0,8">
+
+                                            <VerticalStackLayout Spacing="2">
+                                                <Label Text="{Binding DisplayName}"
+                                                       TextColor="{StaticResource TextPrimary}"
+                                                       FontAttributes="Bold"
+                                                       FontSize="14"
+                                                       LineBreakMode="TailTruncation"/>
+                                                <Label Text="{Binding Detail}"
+                                                       TextColor="{StaticResource TextSecondary}"
+                                                       FontSize="12"
+                                                       LineBreakMode="TailTruncation"/>
+                                            </VerticalStackLayout>
+                                        </Border>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+
+                            <!-- Row 3: Connect / Disconnect
+                                 ★ここは常に見える（レイアウト変動させない） -->
+                            <Grid Grid.Row="3"
+                                  ColumnDefinitions="*,*"
+                                  ColumnSpacing="10"
+                                  Margin="0,4,0,0"
+                                  BackgroundColor="{StaticResource Surface2}"
+                                  Padding="0,6,0,0">
+
+                                <Button Grid.Column="0"
+                                        Text="CONNECT"
+                                        Style="{StaticResource ScanButtonStyle}"
+                                        Command="{Binding ConnectCommand}"
+                                        CommandParameter="{Binding SelectedDevice}"
+                                        IsEnabled="{Binding HasSelectedDevice}"
+                                        HeightRequest="44">
+                                    <Button.Behaviors>
+                                        <beh:TouchFeedbackBehavior />
+                                    </Button.Behaviors>
+                                </Button>
+
+                                <Button Grid.Column="1"
+                                        Text="DISCONNECT"
+                                        Style="{StaticResource DisconnectButtonStyle}"
+                                        Command="{Binding DisconnectCommand}"
+                                        IsEnabled="{Binding CanDisconnect}"
+                                        HeightRequest="44">
+                                    <Button.Behaviors>
+                                        <beh:TouchFeedbackBehavior />
+                                    </Button.Behaviors>
+                                </Button>
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+
+                    <!-- ===== Right: Control Panel ===== -->
+                    <Border Grid.Column="1"
+                            Style="{StaticResource PanelBorderStyle}">
+
+                        <!-- ★通常内容 + ErrorOverlay を同一レイヤーで重ねる -->
+                        <Grid>
+
+                            <!-- ===== 通常コンテンツ ===== -->
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                                  RowSpacing="12">
+
+                                <!-- Row0: Model / Serial -->
+                                <Grid Grid.Row="0" ColumnDefinitions="Auto,* , Auto,*" ColumnSpacing="10">
+                                    <Label Text="Model Name:" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="{Binding ModelName}" TextColor="{StaticResource TextPrimary}" VerticalOptions="Center"/>
+
+                                    <Label Grid.Column="2" Text="Serial Number:" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
+                                    <Label Grid.Column="3" Text="{Binding SerialNumber}" TextColor="{StaticResource TextPrimary}" VerticalOptions="Center"/>
+                                </Grid>
+
+                                <!-- Row1: 運転状態 / 現在Lv / 配管径 -->
+                                <VerticalStackLayout Grid.Row="1" Spacing="10">
+
+                                    <Grid ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="10">
+                                        <Label Text="Status:" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
+
+                                        <Border Grid.Column="1"
+                                                Stroke="{StaticResource White}"
+                                                StrokeThickness="1"
+                                                StrokeShape="{StaticResource RR16}"
+                                                Padding="10,4"
+                                                HorizontalOptions="Start"
+                                                BackgroundColor="{Binding RunStateColor}">
+                                            <Label Text="{Binding RunStateText}"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{StaticResource White}"
+                                                   FontSize="13"
+                                                   VerticalOptions="Center"/>
+                                        </Border>
+
+                                        <Label Grid.Column="2" Text="Lv:" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
+                                        <Label Grid.Column="3"
+                                               Text="{Binding Level}"
+                                               TextColor="{StaticResource TextPrimary}"
+                                               FontAttributes="Bold"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                        <Label Text="Pipe (mm):" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
+                                        <Entry Grid.Column="1"
+                                               Text="{Binding PipeDiameterInput}"
+                                               Keyboard="Numeric"
+                                               Placeholder="例: 100"
+                                               TextColor="{StaticResource TextPrimary}"
+                                               PlaceholderColor="{StaticResource TextSecondary}"
+                                               BackgroundColor="#22000000" />
+
+                                        <Button Grid.Column="2"
+                                                Text="SET"
+                                                Style="{StaticResource ScanButtonStyle}"
+                                                Command="{Binding SetPipeDiameterCommand}">
+                                            <Button.Behaviors>
+                                                <beh:TouchFeedbackBehavior />
+                                            </Button.Behaviors>
+                                        </Button>
+                                    </Grid>
+                                </VerticalStackLayout>
+
+                                <!-- Row2: ここは高さ変動させない（Overlay表示に置き換えたので空でOK） -->
+                                <Grid Grid.Row="2" />
+
+                                <!-- Row3: Metrics -->
+                                <Grid Grid.Row="3"
+                                      ColumnDefinitions="*,*"
+                                      RowDefinitions="Auto,Auto,Auto,Auto"
+                                      RowSpacing="10"
+                                      ColumnSpacing="10">
+
+                                    <ctrl:MetricCard Grid.Row="0" Grid.Column="0"
+                                                     Title="VOLUME" ValueText="{Binding VolumeText}" Unit="m3/min"/>
+
+                                    <ctrl:MetricCard Grid.Row="0" Grid.Column="1"
+                                                     Title="VELOCITY" ValueText="{Binding VelocityText}" Unit="m/s"/>
+
+                                    <ctrl:MetricCard Grid.Row="1" Grid.Column="0"
+                                                     Title="SPEED" ValueText="{Binding SpeedText}" Unit="rpm"
+                                                     CardBackground="{Binding SpeedCardBg}"/>
+
+                                    <ctrl:MetricCard Grid.Row="1" Grid.Column="1"
+                                                     Title="TEMP" ValueText="{Binding TempText}" Unit="℃"
+                                                     CardBackground="{Binding TempCardBg}"/>
+
+                                    <ctrl:MetricCard Grid.Row="2" Grid.Column="0"
+                                                     Title="OUTSIDE" ValueText="{Binding OutsideText}" Unit="kPa"/>
+
+                                    <ctrl:MetricCard Grid.Row="2" Grid.Column="1"
+                                                     Title="SUCTION" ValueText="{Binding SuctionText}" Unit="kPa"
+                                                     CardBackground="{Binding SuctionCardBg}"/>
+
+                                    <ctrl:MetricCard Grid.Row="3" Grid.Column="0"
+                                                     Title="DIFFERENTIAL" ValueText="{Binding DifferentialText}" Unit="kPa"/>
+
+                                    <ctrl:MetricCard Grid.Row="3" Grid.Column="1"
+                                                     Title="EXHAUST" ValueText="{Binding ExhaustText}" Unit="kPa"
+                                                     CardBackground="{Binding ExhaustCardBg}"/>
+                                </Grid>
+
+                                <!-- Row4: Controls -->
+                                <Grid Grid.Row="4" RowDefinitions="Auto">
+                                    <Button Text="CONTROL"
+                                            Style="{StaticResource ScanButtonStyle}"
+                                            Command="{Binding Source={x:Reference Page}, Path=BindingContext.OpenControlsCommand}">
+                                        <Button.Behaviors>
+                                            <beh:TouchFeedbackBehavior />
+                                        </Button.Behaviors>
+                                    </Button>
+                                </Grid>
+
+                            </Grid>
+
+                            <!-- ===== Error Overlay（レイヤー表示）=====
+                                 ★右ペインの上に重ねるだけ：レイアウト高さが変わらない -->
+                            <Grid IsVisible="{Binding IsWarnErrVisible}"
+                                  BackgroundColor="#66000000"
+                                  ZIndex="200"
+                                  InputTransparent="False">
+
+                                <!-- 透明背景タップで閉じたい場合は、VMに CloseWarnErrCommand を作ってここに付ける -->
+                                <!--<BoxView Color="Transparent">
+                                    <BoxView.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding CloseWarnErrCommand}" />
+                                    </BoxView.GestureRecognizers>
+                                </BoxView>-->
+
+                                <Border Padding="14"
+                                        StrokeThickness="1"
+                                        Stroke="{Binding ErrorAccentColor}"
+                                        StrokeShape="{StaticResource RR16}"
+                                        BackgroundColor="{StaticResource AppBg}"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Start"
+                                        Margin="12,56,12,0">
+
+                                    <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+                                          RowSpacing="8">
+
+                                        <Label Grid.Row="0"
+                                               Text="{Binding ErrorNo}"
+                                               FontAttributes="Bold"
+                                               TextColor="{Binding ErrorAccentColor}"
+                                               FontSize="16"/>
+
+                                        <Label Grid.Row="1"
+                                               Text="{Binding ErrorTitle}"
+                                               TextColor="{StaticResource TextPrimary}"
+                                               FontSize="13"/>
+
+                                        <Label Grid.Row="2"
+                                               Text="{Binding ErrorCause}"
+                                               TextColor="{StaticResource TextSecondary}"
+                                               FontSize="12"/>
+
+                                        <Button Grid.Row="3"
+                                                Text="ERROR CLEAR"
+                                                Style="{StaticResource ErrorClearButtonStyle}"
+                                                Command="{Binding ErrorClearCommand}"
+                                                HorizontalOptions="End">
+                                            <Button.Behaviors>
+                                                <beh:TouchFeedbackBehavior />
+                                            </Button.Behaviors>
+                                        </Button>
+
+                                    </Grid>
+                                </Border>
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+
+                </Grid>
+
+                <!-- ===== 下段：Realtime Trend ===== -->
+                <Border Grid.Row="1"
+                        Style="{StaticResource PanelBorderStyle}"
+                        Padding="10"
+                        HeightRequest="{OnIdiom Phone=280, Tablet=360, Desktop=360}">
+
+                    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="10">
+
+                        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                            <Label Text="Realtime Trend"
+                                   TextColor="{StaticResource TextPrimary}"
+                                   FontSize="16"
+                                   FontAttributes="Bold" />
+                            <BoxView Grid.Column="1" WidthRequest="1" Opacity="0" />
+                        </Grid>
+
+                        <Border Grid.Row="1"
+                                Background="{StaticResource Surface2}"
+                                Stroke="{StaticResource Border}"
+                                StrokeThickness="1"
+                                StrokeShape="{StaticResource RR6}"
+                                Padding="10,8">
+
+                            <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                    <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6" VerticalOptions="Center">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding ToggleQCommand}" />
+                                        </Grid.GestureRecognizers>
+                                        <CheckBox Grid.Column="0" IsChecked="{Binding ShowQ}" Style="{StaticResource TrendCheckBoxStyle}" />
+                                        <Label Grid.Column="1" Text="Q" Style="{StaticResource TrendToggleLabelStyle}" />
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6" VerticalOptions="Center">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding ToggleVCommand}" />
+                                        </Grid.GestureRecognizers>
+                                        <CheckBox Grid.Column="0" IsChecked="{Binding ShowV}" Style="{StaticResource TrendCheckBoxStyle}" />
+                                        <Label Grid.Column="1" Text="V" Style="{StaticResource TrendToggleLabelStyle}" />
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6" VerticalOptions="Center">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding ToggleOPCommand}" />
+                                        </Grid.GestureRecognizers>
+                                        <CheckBox Grid.Column="0" IsChecked="{Binding ShowOP}" Style="{StaticResource TrendCheckBoxStyle}" />
+                                        <Label Grid.Column="1" Text="OP" Style="{StaticResource TrendToggleLabelStyle}" />
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6" VerticalOptions="Center">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding ToggleSPCommand}" />
+                                        </Grid.GestureRecognizers>
+                                        <CheckBox Grid.Column="0" IsChecked="{Binding ShowSP}" Style="{StaticResource TrendCheckBoxStyle}" />
+                                        <Label Grid.Column="1" Text="SP" Style="{StaticResource TrendToggleLabelStyle}" />
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6" VerticalOptions="Center">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding ToggleDPCommand}" />
+                                        </Grid.GestureRecognizers>
+                                        <CheckBox Grid.Column="0" IsChecked="{Binding ShowDP}" Style="{StaticResource TrendCheckBoxStyle}" />
+                                        <Label Grid.Column="1" Text="DP" Style="{StaticResource TrendToggleLabelStyle}" />
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6" VerticalOptions="Center">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding ToggleEPCommand}" />
+                                        </Grid.GestureRecognizers>
+                                        <CheckBox Grid.Column="0" IsChecked="{Binding ShowEP}" Style="{StaticResource TrendCheckBoxStyle}" />
+                                        <Label Grid.Column="1" Text="EP" Style="{StaticResource TrendToggleLabelStyle}" />
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6" VerticalOptions="Center">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding ToggleTempCommand}" />
+                                        </Grid.GestureRecognizers>
+                                        <CheckBox Grid.Column="0" IsChecked="{Binding ShowTemp}" Style="{StaticResource TrendCheckBoxStyle}" />
+                                        <Label Grid.Column="1" Text="Temp" Style="{StaticResource TrendToggleLabelStyle}" />
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6" VerticalOptions="Center">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding ToggleRpmCommand}" />
+                                        </Grid.GestureRecognizers>
+                                        <CheckBox Grid.Column="0" IsChecked="{Binding ShowRpm}" Style="{StaticResource TrendCheckBoxStyle}" />
+                                        <Label Grid.Column="1" Text="RPM" Style="{StaticResource TrendToggleLabelStyle}" />
+                                    </Grid>
+                                </HorizontalStackLayout>
+                            </ScrollView>
+                        </Border>
+
+                        <Border Grid.Row="2"
+                                Background="{StaticResource Surface}"
+                                Stroke="{StaticResource Border}"
+                                StrokeThickness="1"
+                                StrokeShape="{StaticResource RR6}"
+                                Padding="8">
+
+                            <lvc:CartesianChart
+                                Series="{Binding ChartSeries}"
+                                XAxes="{Binding ChartXAxes}"
+                                YAxes="{Binding ChartYAxes}"
+                                Sections="{Binding ChartSections}"
+                                LegendPosition="Top"
+                                LegendTextSize="12"
+                                LegendTextPaint="{Binding LegendTextPaint}"
+                                TooltipTextPaint="{Binding TooltipTextPaint}"
+                                TooltipBackgroundPaint="{Binding TooltipBgPaint}"
+                                Background="{StaticResource Surface}"
+                                HorizontalOptions="Fill"
+                                VerticalOptions="Fill" />
+                        </Border>
+
+                    </Grid>
+                </Border>
+
+                <BoxView Grid.Row="2" HeightRequest="8" Opacity="0" />
+
+            </Grid>
+        </ScrollView>
+
+        <!-- ===== オーバーレイ（SCAN/CONNECT 共通）===== -->
+        <Grid Grid.RowSpan="2"
+              IsVisible="{Binding IsOverlayVisible}"
+              BackgroundColor="#80000000"
+              VerticalOptions="Fill"
+              HorizontalOptions="Fill"
+              ZIndex="300">
+
+            <VerticalStackLayout Spacing="16"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Center">
+
+                <skia:SKLottieView
+                    IsAnimationEnabled="True"
+                    RepeatCount="-1"
+                    WidthRequest="180"
+                    HeightRequest="180"
+                    Source="{Binding OverlayLottieSource}" />
+
+                <Label Text="{Binding OverlayText}"
+                       TextColor="White"
+                       FontSize="18"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- ===== Controls Overlay（Dialog固定 / 最前面）===== -->
+        <Grid Grid.RowSpan="2"
+              IsVisible="{Binding Source={x:Reference Page}, Path=BindingContext.IsControlsOpen}"
+              BackgroundColor="#80000000"
+              VerticalOptions="Fill"
+              HorizontalOptions="Fill"
+              ZIndex="400">
+
+            <BoxView Color="Transparent">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding Source={x:Reference Page}, Path=BindingContext.CloseControlsCommand}" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
+
+            <Frame x:Name="ControlsDialog"
+                   BackgroundColor="{StaticResource AppBg}"
+                   CornerRadius="18"
+                   Padding="16"
+                   HasShadow="True"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   WidthRequest="380"
+                   Opacity="0"
+                   Scale="0.96">
+
+                <Grid RowDefinitions="Auto,*" RowSpacing="12">
+
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="10" VerticalOptions="Center">
+                        <Label Text="Controls"
+                               TextColor="{StaticResource White}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center" />
+
+                        <Button Grid.Column="1"
+                                Text="×"
+                                FontSize="18"
+                                Padding="6"
+                                BackgroundColor="Transparent"
+                                TextColor="{StaticResource White}"
+                                Command="{Binding Source={x:Reference Page}, Path=BindingContext.CloseControlsCommand}">
+                            <Button.Behaviors>
+                                <beh:TouchFeedbackBehavior />
+                            </Button.Behaviors>
+                        </Button>
+                    </Grid>
+
+                    <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <Button Grid.Column="0" Text="RUN"
+                                    Style="{StaticResource RunButtonStyle}"
+                                    Command="{Binding Source={x:Reference Page}, Path=BindingContext.RunCommand}">
+                                <Button.Behaviors>
+                                    <beh:TouchFeedbackBehavior />
+                                </Button.Behaviors>
+                            </Button>
+
+                            <Button Grid.Column="1" Text="STOP"
+                                    Style="{StaticResource StopButtonStyle}"
+                                    Command="{Binding Source={x:Reference Page}, Path=BindingContext.StopCommand}">
+                                <Button.Behaviors>
+                                    <beh:TouchFeedbackBehavior />
+                                </Button.Behaviors>
+                            </Button>
+                        </Grid>
+
+                        <Grid Grid.Row="1"
+                              ColumnDefinitions="*,Auto"
+                              ColumnSpacing="10"
+                              Padding="0,20,0,20"
+                              VerticalOptions="Center">
+                            <Slider Minimum="1" Maximum="15"
+                                    Value="{Binding Source={x:Reference Page}, Path=BindingContext.Level}" />
+                            <StackLayout Grid.Column="1"
+                                         Orientation="Vertical"
+                                         Spacing="0"
+                                         VerticalOptions="Center">
+                                <Label Text="Lv" TextColor="{StaticResource TextSecondary}" FontSize="12" HorizontalTextAlignment="Center"/>
+                                <Label Text="{Binding Source={x:Reference Page}, Path=BindingContext.Level}"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       HorizontalTextAlignment="Center"/>
+                            </StackLayout>
+                        </Grid>
+
+                        <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="12">
+
+                            <!-- 手動シェーキング：S5で有効な機種だけ表示 -->
+                            <Button Grid.Column="0"
+                                    Text="SHAKING"
+                                    Style="{StaticResource ScanButtonStyle}"
+                                    IsVisible="{Binding Source={x:Reference Page}, Path=BindingContext.IsShakingVisible}"
+                                    IsEnabled="{Binding Source={x:Reference Page}, Path=BindingContext.IsRunning, Converter={StaticResource InverseBoolConverter}}"
+                                    Command="{Binding Source={x:Reference Page}, Path=BindingContext.ShakingCommand}">
+                                <Button.Behaviors>
+                                    <beh:TouchFeedbackBehavior />
+                                </Button.Behaviors>
+                            </Button>
+
+                            <!-- シェーキング有りなら右半分、無しなら全幅 -->
+                            <Button Text="SET INITIAL FLOW"
+                                    Style="{StaticResource InitialFlowButtonStyle}"
+                                    Command="{Binding Source={x:Reference Page}, Path=BindingContext.SetInitialFlowCommand}">
+                                <Button.Behaviors>
+                                    <beh:TouchFeedbackBehavior />
+                                </Button.Behaviors>
+
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button"
+                                                 Binding="{Binding Source={x:Reference Page}, Path=BindingContext.IsShakingVisible}"
+                                                 Value="True">
+                                        <Setter Property="Grid.Column" Value="1" />
+                                        <Setter Property="Grid.ColumnSpan" Value="1" />
+                                    </DataTrigger>
+
+                                    <DataTrigger TargetType="Button"
+                                                 Binding="{Binding Source={x:Reference Page}, Path=BindingContext.IsShakingVisible}"
+                                                 Value="False">
+                                        <Setter Property="Grid.Column" Value="0" />
+                                        <Setter Property="Grid.ColumnSpan" Value="2" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Frame>
+        </Grid>
+        <!-- ===== Hamburger Menu Overlay ===== -->
+        <Grid Grid.RowSpan="2"
+              IsVisible="{Binding IsMenuOpen}"
+              BackgroundColor="#66000000"
+              VerticalOptions="Fill"
+              HorizontalOptions="Fill"
+              ZIndex="350">
+
+            <!-- 背景タップで閉じる -->
+            <BoxView Color="Transparent">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CloseMenuCommand}" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
+
+            <!-- 右から出るメニューパネル -->
+            <Border HorizontalOptions="End"
+                    VerticalOptions="Fill"
+                    WidthRequest="320"
+                    Padding="18,22"
+                    BackgroundColor="{StaticResource AppBg}"
+                    Stroke="{StaticResource Border}"
+                    StrokeThickness="1">
+
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*"
+                      RowSpacing="12">
+
+                    <!-- ヘッダー -->
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                        <Label Text="MENU"
+                               TextColor="{StaticResource White}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center" />
+
+                        <Button Grid.Column="1"
+                                Text="×"
+                                FontSize="18"
+                                Padding="6"
+                                BackgroundColor="Transparent"
+                                TextColor="{StaticResource White}"
+                                Command="{Binding CloseMenuCommand}">
+                            <Button.Behaviors>
+                                <beh:TouchFeedbackBehavior />
+                            </Button.Behaviors>
+                        </Button>
+                    </Grid>
+
+                    <!-- 一般設定 -->
+                    <Button Grid.Row="1"
+                            Text="一般設定"
+                            Style="{StaticResource ScanButtonStyle}"
+                            Command="{Binding OpenGeneralSettingsCommand}">
+                        <Button.Behaviors>
+                            <beh:TouchFeedbackBehavior />
+                        </Button.Behaviors>
+                    </Button>
+
+                    <!-- エラー発生履歴 -->
+                    <Button Grid.Row="2"
+                            Text="エラー発生履歴"
+                            Style="{StaticResource ScanButtonStyle}"
+                            Command="{Binding OpenErrorHistoryCommand}">
+                        <Button.Behaviors>
+                            <beh:TouchFeedbackBehavior />
+                        </Button.Behaviors>
+                    </Button>
+
+                    <!-- 稼働履歴 -->
+                    <Button Grid.Row="3"
+                            Text="稼働履歴"
+                            Style="{StaticResource ScanButtonStyle}"
+                            Command="{Binding OpenOperationHistoryCommand}">
+                        <Button.Behaviors>
+                            <beh:TouchFeedbackBehavior />
+                        </Button.Behaviors>
+                    </Button>
+
+                    <!-- 管理者設定 -->
+                    <Button Grid.Row="4"
+                            Text="管理者設定"
+                            Style="{StaticResource ErrorClearButtonStyle}"
+                            Command="{Binding OpenAdminSettingsCommand}">
+                        <Button.Behaviors>
+                            <beh:TouchFeedbackBehavior />
+                        </Button.Behaviors>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>
