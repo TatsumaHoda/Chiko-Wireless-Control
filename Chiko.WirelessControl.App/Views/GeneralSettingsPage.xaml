@@ -3,17 +3,192 @@
     x:Class="Chiko.WirelessControl.App.Views.GeneralSettingsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="一般設定"
+    Title="General Settings"
     BackgroundColor="{StaticResource AppBg}">
 
-    <Grid Padding="20">
-        <VerticalStackLayout Spacing="16">
-            <Label Text="一般設定"
-                   FontSize="24"
-                   FontAttributes="Bold"
-                   TextColor="{StaticResource White}" />
-            <Label Text="集塵機の設定画面（プレースホルダ）"
-                   TextColor="{StaticResource TextPrimary}" />
-        </VerticalStackLayout>
+    <Grid Padding="14">
+        <ScrollView>
+            <VerticalStackLayout Spacing="14">
+
+                <Label Text="GENERAL SETTINGS"
+                       TextColor="{StaticResource White}"
+                       FontSize="22"
+                       FontAttributes="Bold" />
+
+                <Border Style="{StaticResource PanelBorderStyle}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="SETTING1"
+                               TextColor="{StaticResource TextSecondary}"
+                               FontSize="13"
+                               FontAttributes="Bold" />
+
+                        <Border Style="{StaticResource ListBorderStyle}">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="VOLUME DOWN SETTING"
+                                       TextColor="{StaticResource White}"
+                                       FontSize="16"
+                                       FontAttributes="Bold" />
+
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center">
+                                    <Label Text="VOLUME DOWN RATE" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
+                                    <Entry Grid.Column="1"
+                                           Text="{Binding VolumeDownRate}"
+                                           Keyboard="Numeric"
+                                           HorizontalTextAlignment="End"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           BackgroundColor="#22000000" />
+                                    <Label Grid.Column="2" Text="%" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <Label Text="SET INITIAL AIR VOLUME" Style="{StaticResource SectionTitleStyle}"/>
+                                    <Label Grid.Column="1" Text="{Binding InitialAirVolume}" Style="{StaticResource ValueBigStyle}"/>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <Label Text="Air Volume Reduction Threshold" Style="{StaticResource SectionTitleStyle}"/>
+                                    <Label Grid.Column="1" Text="{Binding AirVolumeReductionThreshold}" Style="{StaticResource ValueBigStyle}"/>
+                                </Grid>
+
+                                <Button Text="CLEAR INITIAL AIR VOLUME"
+                                        Style="{StaticResource ErrorClearButtonStyle}"
+                                        Command="{Binding ClearInitialAirVolumeCommand}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                                <Border Style="{StaticResource PanelBorderStyle}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="SETTING2"
+                               TextColor="{StaticResource TextSecondary}"
+                               FontSize="13"
+                               FontAttributes="Bold" />
+
+                        <Border Style="{StaticResource ListBorderStyle}">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="REMOTE OUTPUT SETTING"
+                                       TextColor="{StaticResource White}"
+                                       FontSize="16"
+                                       FontAttributes="Bold" />
+
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="8" VerticalOptions="Center">
+                                    <Label Text="OPERATION ANALOG OUTPUT SIGNAL" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
+                                    <Picker Grid.Column="1"
+                                            ItemsSource="{Binding RemoteOutputSignalOptions}"
+                                            SelectedItem="{Binding SelectedRemoteOutputSignal}"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            BackgroundColor="#22000000" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+<Border Style="{StaticResource PanelBorderStyle}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="SETTING3"
+                               TextColor="{StaticResource TextSecondary}"
+                               FontSize="13"
+                               FontAttributes="Bold" />
+
+                        <Border Style="{StaticResource ListBorderStyle}"
+                                IsVisible="{Binding IsShakingAvailable}">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="SHAKING SETTING"
+                                       TextColor="{StaticResource White}"
+                                       FontSize="16"
+                                       FontAttributes="Bold" />
+
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                    <VerticalStackLayout Spacing="6">
+                                        <Label Text="TIME INTERVAL (MINUTES)" Style="{StaticResource SectionTitleStyle}"/>
+                                        <Picker ItemsSource="{Binding ShakingIntervalOptions}"
+                                                SelectedItem="{Binding ShakingTimeInterval}"
+                                                TextColor="{StaticResource TextPrimary}"
+                                                BackgroundColor="#22000000" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                        <Label Text="OPERATING TIME (SECONDS)" Style="{StaticResource SectionTitleStyle}"/>
+                                        <Picker ItemsSource="{Binding ShakingOperatingTimeOptions}"
+                                                SelectedItem="{Binding ShakingOperatingTime}"
+                                                TextColor="{StaticResource TextPrimary}"
+                                                BackgroundColor="#22000000" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Style="{StaticResource ListBorderStyle}"
+                                IsVisible="{Binding IsPulseAvailable}">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="PULSE SETTING"
+                                       TextColor="{StaticResource White}"
+                                       FontSize="16"
+                                       FontAttributes="Bold" />
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" VerticalOptions="Center">
+                                    <Label Text="INTERVAL SETTING (SECONDS)" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
+                                    <Entry Grid.Column="1"
+                                           WidthRequest="110"
+                                           Text="{Binding PulseIntervalSetting}"
+                                           Keyboard="Numeric"
+                                           HorizontalTextAlignment="End"
+                                           TextColor="{StaticResource TextPrimary}"
+                                           BackgroundColor="#22000000" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalOptions="Center">
+                                    <Label Text="AUTO MODE" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
+                                    <Switch Grid.Column="1" IsToggled="{Binding IsAutoPulseEnabled}" HorizontalOptions="Start"/>
+                                </Grid>
+
+                                <Button Text="MANUAL PULSE"
+                                        Style="{StaticResource RunButtonStyle}"
+                                        Command="{Binding ManualPulseCommand}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource PanelBorderStyle}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="SETTING4"
+                               TextColor="{StaticResource TextSecondary}"
+                               FontSize="13"
+                               FontAttributes="Bold" />
+
+                        <Border Style="{StaticResource ListBorderStyle}">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="RESET SETTING VALUE"
+                                       TextColor="{StaticResource White}"
+                                       FontSize="16"
+                                       FontAttributes="Bold" />
+
+                                <Button Text="RESET"
+                                        Style="{StaticResource ErrorClearButtonStyle}"
+                                        Command="{Binding ResetSettingValueCommand}" />
+
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                    <Label Text="PRODUCT NAME" Style="{StaticResource SectionTitleStyle}"/>
+                                    <Label Grid.Column="1" Text="{Binding ProductName}" TextColor="{StaticResource TextPrimary}"/>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                    <Label Text="SERIAL NUMBER" Style="{StaticResource SectionTitleStyle}"/>
+                                    <Label Grid.Column="1" Text="{Binding SerialNumber}" TextColor="{StaticResource TextPrimary}"/>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                    <Label Text="PROGRAM VERSION" Style="{StaticResource SectionTitleStyle}"/>
+                                    <Label Grid.Column="1" Text="{Binding ProgramVersion}" TextColor="{StaticResource TextPrimary}"/>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
     </Grid>
 </ContentPage>

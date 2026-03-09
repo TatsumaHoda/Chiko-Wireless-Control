@@ -1,4 +1,4 @@
-﻿using Chiko.WirelessControl.App.Services;
+using Chiko.WirelessControl.App.Services;
 using Chiko.WirelessControl.App.Views;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
@@ -62,6 +62,9 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
 
     private string _serialNumber = "";
     public string SerialNumber { get => _serialNumber; set => SetProperty(ref _serialNumber, value); }
+
+    private string _programVersion = "-";
+    public string ProgramVersion { get => _programVersion; set => SetProperty(ref _programVersion, value); }
     // ===== 運転状態表示 =====
     private bool _isRunning;
     public bool IsRunning
@@ -1365,6 +1368,7 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
 
                 ModelName = model;
                 SerialNumber = serial;
+                ProgramVersion = program;
                 if (pipeMm.HasValue) PipeDiameterInput = pipeMm.Value.ToString();
 
                 // ★S5反映（後述のプロパティへ）
@@ -1406,6 +1410,7 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
                 var (model, serial, program, pipeMm, s5) = await InitAfterConnectedAsync(client, connectCts.Token);
                 ModelName = model;
                 SerialNumber = serial;
+                ProgramVersion = program;
                 if (pipeMm.HasValue) PipeDiameterInput = pipeMm.Value.ToString();
 
                 // ★S5反映（後述のプロパティへ）
@@ -1447,6 +1452,7 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
                 var (model, serial, program, pipeMm, s5) = await InitAfterConnectedAsync(client, connectCts.Token);
                 ModelName = model;
                 SerialNumber = serial;
+                ProgramVersion = program;
                 if (pipeMm.HasValue) PipeDiameterInput = pipeMm.Value.ToString();
 
                 // ★S5反映（後述のプロパティへ）
@@ -2010,6 +2016,7 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
         // ---- 機器情報 ----
         ModelName = "";
         SerialNumber = "";
+        ProgramVersion = "-";
         IsShakingVisible = false;
         IsPulseEnabled = false;
 
@@ -2112,7 +2119,7 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
             IsMenuOpen = false;
             IsUiEnabled = true;
 
-            await Shell.Current.Navigation.PushAsync(new GeneralSettingsPage());
+            await Shell.Current.Navigation.PushAsync(new GeneralSettingsPage(this));
         }
         catch (Exception ex)
         {
