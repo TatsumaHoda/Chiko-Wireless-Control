@@ -550,20 +550,23 @@
               HorizontalOptions="Fill"
               ZIndex="400">
 
-            <BoxView Color="Transparent">
+            <BoxView Color="Transparent" ZIndex="0">
                 <BoxView.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding Source={x:Reference Page}, Path=BindingContext.CloseControlsCommand}" />
                 </BoxView.GestureRecognizers>
             </BoxView>
 
             <Frame x:Name="ControlsDialog"
+                   ZIndex="1"
                    BackgroundColor="{StaticResource AppBg}"
                    CornerRadius="18"
                    Padding="16"
                    HasShadow="True"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
-                   WidthRequest="380"
+                   WidthRequest="{OnPlatform iOS='330', Default='380'}"
+                   MaximumWidthRequest="380"
+                   Margin="{OnPlatform iOS='10,0', Default='0'}"
                    Opacity="0"
                    Scale="0.96">
 
@@ -637,14 +640,15 @@
                                     Style="{StaticResource ScanButtonStyle}"
                                     IsVisible="{Binding Source={x:Reference Page}, Path=BindingContext.IsShakingVisible}"
                                     IsEnabled="{Binding Source={x:Reference Page}, Path=BindingContext.IsRunning, Converter={StaticResource InverseBoolConverter}}"
-                                    Command="{Binding Source={x:Reference Page}, Path=BindingContext.ShakingCommand}">
+                                    Command="{Binding Source={x:Reference Page}, Path=BindingContext.ShakingCommand}"
+                                    MinimumHeightRequest="44">
                                 <Button.Behaviors>
                                     <beh:TouchFeedbackBehavior />
                                 </Button.Behaviors>
                             </Button>
 
                             <!-- シェーキング有りなら右半分、無しなら全幅 -->
-                            <Button Text="SET INITIAL FLOW"
+                            <Button Grid.Column="1" Text="SET INITIAL FLOW"
                                     Style="{StaticResource InitialFlowButtonStyle}"
                                     Command="{Binding Source={x:Reference Page}, Path=BindingContext.SetInitialFlowCommand}">
                                 <Button.Behaviors>

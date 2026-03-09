@@ -1522,8 +1522,8 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
             return;
         }
 
-        // 表示条件はまず単純に：搭載/許可がtrueなら表示
-        IsShakingVisible = s5.ShakingEnabled;
+        // S5由来フラグで表示を判定（搭載/許可 or 設定有り）
+        IsShakingVisible = s5.ShakingEnabled || s5.ShakingConfigured;
 
         IsPulseEnabled = s5.PulseEnabled;
 
@@ -1874,6 +1874,8 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
     {
         try
         {
+            Log("[SHAKING] pressed");
+
             if (!IsConnected || _tp is null) return;
             if (!IsShakingVisible) return;
 
@@ -2008,6 +2010,8 @@ public sealed class MainPageViewModel : INotifyPropertyChanged
         // ---- 機器情報 ----
         ModelName = "";
         SerialNumber = "";
+        IsShakingVisible = false;
+        IsPulseEnabled = false;
 
         // ---- 運転状態 ----
         IsRunning = false;

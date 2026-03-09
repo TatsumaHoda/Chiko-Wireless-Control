@@ -18,6 +18,8 @@
             <converters:BoolToBgConverter x:Key="BoolToBgConverter" />
             <converters:BoolToTextConverter x:Key="BoolToTextConverter" />
 
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

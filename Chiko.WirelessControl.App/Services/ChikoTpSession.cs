@@ -273,7 +273,10 @@ public sealed class ChikoTpSession
         bool shakingConfigured = ParseBool01(frame, IDX_SHAKING_CONFIGURED);
         bool pulseEnabled = ParseBool01(frame, IDX_PULSE_ENABLED);
 
-        Log($"[S5][FLAGS] idx24='{frame[IDX_SHAKING_ENABLED]}' idx25='{frame[IDX_SHAKING_CONFIGURED]}' idx26='{frame[IDX_PULSE_ENABLED]}'");
+        var c24 = (IDX_SHAKING_ENABLED >= 0 && IDX_SHAKING_ENABLED < frame.Length) ? frame[IDX_SHAKING_ENABLED] : '?';
+        var c25 = (IDX_SHAKING_CONFIGURED >= 0 && IDX_SHAKING_CONFIGURED < frame.Length) ? frame[IDX_SHAKING_CONFIGURED] : '?';
+        var c26 = (IDX_PULSE_ENABLED >= 0 && IDX_PULSE_ENABLED < frame.Length) ? frame[IDX_PULSE_ENABLED] : '?';
+        Log($"[S5][FLAGS] idx24='{c24}' idx25='{c25}' idx26='{c26}'");
         Log($"[S5][FLAGS] shakingEnabled={shakingEnabled} shakingConfigured={shakingConfigured} pulseEnabled={pulseEnabled}");
 
         return new S5Settings(
@@ -288,7 +291,7 @@ public sealed class ChikoTpSession
     private static bool ParseBool01(string s, int index)
     {
         if (index < 0 || index >= s.Length)
-            throw new ArgumentOutOfRangeException(nameof(index));
+            return false;
         return s[index] == '1';
     }
 
