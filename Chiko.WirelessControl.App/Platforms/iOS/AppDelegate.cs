@@ -12,6 +12,17 @@ namespace Chiko.WirelessControl.App
 
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
+            AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+            {
+                System.Diagnostics.Debug.WriteLine("[BOOT] UnhandledException: " + e.ExceptionObject);
+            };
+
+            TaskScheduler.UnobservedTaskException += (_, e) =>
+            {
+                System.Diagnostics.Debug.WriteLine("[BOOT] UnobservedTaskException: " + e.Exception);
+                e.SetObserved();
+            };
+
             // 先にMAUI側の初期化を通す
             var ok = base.FinishedLaunching(application, launchOptions);
 
@@ -22,7 +33,7 @@ namespace Chiko.WirelessControl.App
                 session.SetCategory(AVAudioSessionCategory.Ambient);
                 session.SetActive(true);
             }
-            catch { }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine("[BOOT] AVAudioSession init error: " + ex); }
 
             return ok;
         }
