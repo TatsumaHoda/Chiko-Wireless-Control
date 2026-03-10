@@ -12,13 +12,21 @@ public partial class GeneralSettingsPage : ContentPage
 
         _vm = new GeneralSettingsViewModel(sourceVm);
         _vm.LogRequested += OnLogRequested;
+        _vm.ShowAlertRequested += OnShowAlertRequested;
 
         BindingContext = _vm;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _vm.LoadOnOpenAsync();
     }
 
     protected override void OnDisappearing()
     {
         _vm.LogRequested -= OnLogRequested;
+        _vm.ShowAlertRequested -= OnShowAlertRequested;
         _vm.Dispose();
         base.OnDisappearing();
     }
@@ -27,4 +35,31 @@ public partial class GeneralSettingsPage : ContentPage
     {
         System.Diagnostics.Debug.WriteLine(msg);
     }
+
+    private Task OnShowAlertRequested(string title, string message)
+        => DisplayAlert(title, message, "OK");
+
+    private async void VolumeDownRateEntry_Completed(object? sender, EventArgs e)
+        => await _vm.CommitVolumeDownRateAsync();
+
+    private async void VolumeDownRateEntry_Unfocused(object? sender, FocusEventArgs e)
+        => await _vm.CommitVolumeDownRateAsync();
+
+    private async void RemoteOutputSignalPicker_SelectedIndexChanged(object? sender, EventArgs e)
+        => await _vm.CommitRemoteOutputSignalAsync();
+
+    private async void ShakingIntervalPicker_SelectedIndexChanged(object? sender, EventArgs e)
+        => await _vm.CommitShakingIntervalAsync();
+
+    private async void ShakingOperatingTimePicker_SelectedIndexChanged(object? sender, EventArgs e)
+        => await _vm.CommitShakingOperatingTimeAsync();
+
+    private async void PulseIntervalEntry_Completed(object? sender, EventArgs e)
+        => await _vm.CommitPulseIntervalAsync();
+
+    private async void PulseIntervalEntry_Unfocused(object? sender, FocusEventArgs e)
+        => await _vm.CommitPulseIntervalAsync();
+
+    private async void AutoPulseSwitch_Toggled(object? sender, ToggledEventArgs e)
+        => await _vm.CommitAutoPulseAsync();
 }

@@ -31,12 +31,15 @@
 
                                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" VerticalOptions="Center">
                                     <Label Text="VOLUME DOWN RATE" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
-                                    <Entry Grid.Column="1"
+                                    <Entry x:Name="VolumeDownRateEntry"
+                                           Grid.Column="1"
                                            Text="{Binding VolumeDownRate}"
                                            Keyboard="Numeric"
                                            HorizontalTextAlignment="End"
                                            TextColor="{StaticResource TextPrimary}"
-                                           BackgroundColor="#22000000" />
+                                           BackgroundColor="#22000000"
+                                           Completed="VolumeDownRateEntry_Completed"
+                                           Unfocused="VolumeDownRateEntry_Unfocused" />
                                     <Label Grid.Column="2" Text="%" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
                                 </Grid>
 
@@ -58,7 +61,7 @@
                     </VerticalStackLayout>
                 </Border>
 
-                                <Border Style="{StaticResource PanelBorderStyle}">
+                <Border Style="{StaticResource PanelBorderStyle}">
                     <VerticalStackLayout Spacing="10">
                         <Label Text="SETTING2"
                                TextColor="{StaticResource TextSecondary}"
@@ -74,17 +77,20 @@
 
                                 <Grid ColumnDefinitions="*,*" ColumnSpacing="8" VerticalOptions="Center">
                                     <Label Text="OPERATION ANALOG OUTPUT SIGNAL" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
-                                    <Picker Grid.Column="1"
+                                    <Picker x:Name="RemoteOutputSignalPicker"
+                                            Grid.Column="1"
                                             ItemsSource="{Binding RemoteOutputSignalOptions}"
                                             SelectedItem="{Binding SelectedRemoteOutputSignal}"
                                             TextColor="{StaticResource TextPrimary}"
-                                            BackgroundColor="#22000000" />
+                                            BackgroundColor="#22000000"
+                                            SelectedIndexChanged="RemoteOutputSignalPicker_SelectedIndexChanged" />
                                 </Grid>
                             </VerticalStackLayout>
                         </Border>
                     </VerticalStackLayout>
                 </Border>
-<Border Style="{StaticResource PanelBorderStyle}">
+
+                <Border Style="{StaticResource PanelBorderStyle}">
                     <VerticalStackLayout Spacing="10">
                         <Label Text="SETTING3"
                                TextColor="{StaticResource TextSecondary}"
@@ -102,18 +108,22 @@
                                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                                     <VerticalStackLayout Spacing="6">
                                         <Label Text="TIME INTERVAL (MINUTES)" Style="{StaticResource SectionTitleStyle}"/>
-                                        <Picker ItemsSource="{Binding ShakingIntervalOptions}"
+                                        <Picker x:Name="ShakingIntervalPicker"
+                                                ItemsSource="{Binding ShakingIntervalOptions}"
                                                 SelectedItem="{Binding ShakingTimeInterval}"
                                                 TextColor="{StaticResource TextPrimary}"
-                                                BackgroundColor="#22000000" />
+                                                BackgroundColor="#22000000"
+                                                SelectedIndexChanged="ShakingIntervalPicker_SelectedIndexChanged" />
                                     </VerticalStackLayout>
 
                                     <VerticalStackLayout Grid.Column="1" Spacing="6">
                                         <Label Text="OPERATING TIME (SECONDS)" Style="{StaticResource SectionTitleStyle}"/>
-                                        <Picker ItemsSource="{Binding ShakingOperatingTimeOptions}"
+                                        <Picker x:Name="ShakingOperatingTimePicker"
+                                                ItemsSource="{Binding ShakingOperatingTimeOptions}"
                                                 SelectedItem="{Binding ShakingOperatingTime}"
                                                 TextColor="{StaticResource TextPrimary}"
-                                                BackgroundColor="#22000000" />
+                                                BackgroundColor="#22000000"
+                                                SelectedIndexChanged="ShakingOperatingTimePicker_SelectedIndexChanged" />
                                     </VerticalStackLayout>
                                 </Grid>
                             </VerticalStackLayout>
@@ -129,18 +139,25 @@
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" VerticalOptions="Center">
                                     <Label Text="INTERVAL SETTING (SECONDS)" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
-                                    <Entry Grid.Column="1"
+                                    <Entry x:Name="PulseIntervalEntry"
+                                           Grid.Column="1"
                                            WidthRequest="110"
                                            Text="{Binding PulseIntervalSetting}"
                                            Keyboard="Numeric"
                                            HorizontalTextAlignment="End"
                                            TextColor="{StaticResource TextPrimary}"
-                                           BackgroundColor="#22000000" />
+                                           BackgroundColor="#22000000"
+                                           Completed="PulseIntervalEntry_Completed"
+                                           Unfocused="PulseIntervalEntry_Unfocused" />
                                 </Grid>
 
                                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalOptions="Center">
                                     <Label Text="AUTO MODE" Style="{StaticResource SectionTitleStyle}" VerticalOptions="Center"/>
-                                    <Switch Grid.Column="1" IsToggled="{Binding IsAutoPulseEnabled}" HorizontalOptions="Start"/>
+                                    <Switch x:Name="AutoPulseSwitch"
+                                            Grid.Column="1"
+                                            IsToggled="{Binding IsAutoPulseEnabled}"
+                                            HorizontalOptions="Start"
+                                            Toggled="AutoPulseSwitch_Toggled" />
                                 </Grid>
 
                                 <Button Text="MANUAL PULSE"

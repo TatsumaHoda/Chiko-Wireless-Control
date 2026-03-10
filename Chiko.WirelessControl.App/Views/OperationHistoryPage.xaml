@@ -1,19 +1,122 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="Chiko.WirelessControl.App.Views.OperationHistoryPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="稼働履歴"
+    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+    Title="Operation History"
     BackgroundColor="{StaticResource AppBg}">
 
-    <Grid Padding="20">
-        <VerticalStackLayout Spacing="16">
-            <Label Text="稼働履歴"
-                   FontSize="24"
-                   FontAttributes="Bold"
-                   TextColor="{StaticResource White}" />
-            <Label Text="ログデータ・稼働グラフ表示画面（プレースホルダ）"
-                   TextColor="{StaticResource TextPrimary}" />
-        </VerticalStackLayout>
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="12" Spacing="10">
+                <HorizontalStackLayout Spacing="10">
+                    <Button Text="Read"
+                            Command="{Binding ReadCommand}"
+                            IsEnabled="{Binding IsNotBusy}" />
+                    <Label Text="{Binding StatusMessage}"
+                           VerticalTextAlignment="Center"
+                           TextColor="{StaticResource TextPrimary}" />
+                </HorizontalStackLayout>
+
+                <Label Text="{Binding NoDataMessage}"
+                       IsVisible="{Binding IsNoDataVisible}"
+                       TextColor="{StaticResource TextPrimary}"
+                       FontSize="14" />
+
+                <Border Stroke="{StaticResource White}" StrokeThickness="1" Padding="0">
+                    <ScrollView Orientation="Horizontal">
+                        <VerticalStackLayout Spacing="0">
+                            <Grid BackgroundColor="#223040"
+                                  Padding="6,8"
+                                  ColumnSpacing="8"
+                                  ColumnDefinitions="150,160,40,90,70,70,70,70,150,90,130,260">
+                                <Label Grid.Column="0" Text="Date &amp; Time" FontAttributes="Bold" TextColor="White" />
+                                <Label Grid.Column="1" Text="Trigger" FontAttributes="Bold" TextColor="White" />
+                                <Label Grid.Column="2" Text="Lv" FontAttributes="Bold" TextColor="White" />
+                                <Label Grid.Column="3" Text="Air Volume" FontAttributes="Bold" TextColor="White" />
+                                <Label Grid.Column="4" Text="OP" FontAttributes="Bold" TextColor="White" />
+                                <Label Grid.Column="5" Text="SP" FontAttributes="Bold" TextColor="White" />
+                                <Label Grid.Column="6" Text="DP" FontAttributes="Bold" TextColor="White" />
+                                <Label Grid.Column="7" Text="EP" FontAttributes="Bold" TextColor="White" />
+                                <Label Grid.Column="8" Text="Blower / Motor Temp" FontAttributes="Bold" TextColor="White" />
+                                <Label Grid.Column="9" Text="RPM" FontAttributes="Bold" TextColor="White" />
+                                <Label Grid.Column="10" Text="Operating Hours" FontAttributes="Bold" TextColor="White" />
+                                <Label Grid.Column="11" Text="Error Details" FontAttributes="Bold" TextColor="White" />
+                            </Grid>
+
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Rows}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Padding="6,6"
+                                              ColumnSpacing="8"
+                                              ColumnDefinitions="150,160,40,90,70,70,70,70,150,90,130,260">
+                                            <Label Grid.Column="0" Text="{Binding TimestampText}" TextColor="{StaticResource TextPrimary}" />
+                                            <Label Grid.Column="1" Text="{Binding Trigger}" TextColor="{StaticResource TextPrimary}" />
+                                            <Label Grid.Column="2" Text="{Binding LvText}" TextColor="{StaticResource TextPrimary}" />
+                                            <Label Grid.Column="3" Text="{Binding AirVolumeText}" TextColor="{StaticResource TextPrimary}" />
+                                            <Label Grid.Column="4" Text="{Binding OutsideText}" TextColor="{StaticResource TextPrimary}" />
+                                            <Label Grid.Column="5" Text="{Binding SuctionText}" TextColor="{StaticResource TextPrimary}" />
+                                            <Label Grid.Column="6" Text="{Binding DifferentialText}" TextColor="{StaticResource TextPrimary}" />
+                                            <Label Grid.Column="7" Text="{Binding ExhaustText}" TextColor="{StaticResource TextPrimary}" />
+                                            <Label Grid.Column="8" Text="{Binding BlowerTempText}" TextColor="{StaticResource TextPrimary}" />
+                                            <Label Grid.Column="9" Text="{Binding RpmText}" TextColor="{StaticResource TextPrimary}" />
+                                            <Label Grid.Column="10" Text="{Binding HoursText}" TextColor="{StaticResource TextPrimary}" />
+                                            <Label Grid.Column="11" Text="{Binding ErrorDetails}" TextColor="{StaticResource TextPrimary}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </Border>
+
+                <Label Text="Chart items"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource TextPrimary}" />
+
+                <FlexLayout Direction="Row" Wrap="Wrap" AlignItems="Center" JustifyContent="Start" BindableLayout.ItemsSource="{Binding MetricToggles}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <HorizontalStackLayout Spacing="4" Margin="0,0,12,8">
+                                <CheckBox IsChecked="{Binding IsChecked}" />
+                                <Label Text="{Binding Label}" VerticalTextAlignment="Center" TextColor="{StaticResource TextPrimary}" />
+                            </HorizontalStackLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+
+                <Border Stroke="{StaticResource White}" StrokeThickness="1" Padding="6">
+                    <lvc:CartesianChart
+                        HeightRequest="320"
+                        Series="{Binding ChartSeries}"
+                        XAxes="{Binding ChartXAxes}"
+                        YAxes="{Binding ChartYAxes}" />
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid IsVisible="{Binding IsOverlayVisible}"
+              BackgroundColor="#80000000"
+              InputTransparent="False">
+            <Border Stroke="White"
+                    StrokeThickness="1"
+                    BackgroundColor="#223040"
+                    Padding="20"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="READING..."
+                           HorizontalTextAlignment="Center"
+                           TextColor="White"
+                           FontAttributes="Bold"
+                           FontSize="18" />
+                    <Label Text="{Binding ReadProgressText}"
+                           HorizontalTextAlignment="Center"
+                           TextColor="White"
+                           FontSize="16" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
     </Grid>
 </ContentPage>

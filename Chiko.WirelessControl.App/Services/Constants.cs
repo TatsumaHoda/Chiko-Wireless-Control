@@ -1,4 +1,4 @@
-﻿// Chiko.WirelessControl.App/Services/Constants.cs
+// Chiko.WirelessControl.App/Services/Constants.cs
 namespace Chiko.WirelessControl.App.Services
 {
     /// <summary>
@@ -44,6 +44,22 @@ namespace Chiko.WirelessControl.App.Services
             public const string COMMAND_SHOKI_FURYO = "2C";
             /// <summary>風量低下判定閾値</summary>
             public const string COMMAND_TEIKA_HANTEI_ISHI = "2D";
+            /// <summary>シェーキング/パルス有無フラグ</summary>
+            public const string COMMAND_SHAKING_PULSE_FLAG = "2E";
+            /// <summary>パルス手動動作</summary>
+            public const string COMMAND_PULSE_OPERATION = "2F";
+            /// <summary>パルス間隔</summary>
+            public const string COMMAND_PULSE_INTERVAL = "30";
+            /// <summary>パルス自動制御</summary>
+            public const string COMMAND_PULSE_AUTO_CONTROL = "31";
+            /// <summary>シェーキング時間間隔</summary>
+            public const string COMMAND_SHAKING_TIME = "33";
+            /// <summary>自動シェーキング時間</summary>
+            public const string COMMAND_AUTO_SHAKING_TIME = "35";
+            /// <summary>運転アナログ出力信号</summary>
+            public const string COMMAND_OPERATION_ANALOG_SIGNAL = "8D";
+            /// <summary>設定値リセット</summary>
+            public const string COMMAND_SET_RESET = "3D";
 
             /// <summary>機種名LL3</summary>
             public const string COMMAND_MODEL_NAME_LL3 = "61";
@@ -121,6 +137,9 @@ namespace Chiko.WirelessControl.App.Services
             ///<summary>配管直径</summary>
             public const string COMMAND_HAIKAN = "0F";
             /// <summary>設定一括読み出し</summary>
+            public const string COMMAND_READ_SETTINGS = "S5";
+            /// <summary>機器情報一括読み出し</summary>
+            public const string COMMAND_PRODUCTINFO_READ = "S7";
             public const string COMMAND_SETTINYOMIDASHID = "S5";
         }
 
